@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: ./Docker/PHP/Dockerfile
+        image: docupet-app
+        container_name: docupet-app
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - .:/var/www/html
+        networks:
+            - docupet
+
+    db:
+        image: mysql:latest
+        container_name: docupet-db
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        ports:
+            - "3306:3306"
+        networks:
+            - docupet
+
+networks:
+    docupet:
+        driver: bridge
