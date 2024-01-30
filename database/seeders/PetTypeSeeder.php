@@ -10,17 +10,18 @@ class PetTypeSeeder extends Seeder
 {
 
     private $types = [
-        'Cat',
-        'Dog',
+        'Cat' => 0,
+        'Dog' => 1,
     ];
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        foreach ($this->types as $type) {
+        foreach ($this->types as $type => $hasDangerous) {
             PetType::updateOrCreate([
                 'name' => $type,
+                'has_dangerous' => $hasDangerous
             ]);
         }
     }
