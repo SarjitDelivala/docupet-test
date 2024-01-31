@@ -2,8 +2,10 @@
 <template>
     <el-drawer
         v-model="visible"
+        v-loading = "loading"
         size="40%"
         title="Add New Pet"
+        @open = "openEvents"
     >
         <template #default>
             <el-form :model="pet">
@@ -12,17 +14,17 @@
                 </el-form-item>
                 <el-form-item label="Pet Type" prop="pet_type_id">
                     <el-select v-model="pet.pet_type_id">
-                        <el-option v-for="(index, pet) in petTypes" :key="index" :label="pet.name" :value="pet.id">
+                        <el-option v-for="(petType, index) in petTypes" :key="index" :label="petType.name" :value="petType.id">
                         </el-option>
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Breed" prop="breed_id">
                     <el-select v-model="pet.breed_id">
-                        <el-option v-for="(index, breed) in fbreeds" :key="index" :label="breed.name" :value="breed.id">
+                        <el-option v-for="(breed, index) in fbreeds" :key="index" :label="breed.name" :value="breed.id">
                         </el-option>
                     </el-select>
 
-                    <el-radio-group v-model="pet.breed_known" v-if="pet.breed_id">
+                    <el-radio-group v-model="pet.breed_known" v-if="pet.breed_id === otherBreed">
                         <el-radio-button label="I don't know"></el-radio-button>
                         <el-radio-button label="It's a mix"></el-radio-button>
                     </el-radio-group>
@@ -33,7 +35,7 @@
                         <el-radio-button label="No"></el-radio-button>
                         <el-radio-button label="Yes"></el-radio-button>
                     </el-radio-group>
-                    <el-date-picker v-model="pet.dob" v-if = "pet.age_known === 'Yes'"></el-date-picker>
+                    <el-date-picker v-model="pet.dob" value-format="YYYY-MM-DD" v-if = "pet.age_known === 'Yes'"></el-date-picker>
                     <el-input type="number" v-model="pet.age" v-else-if = "pet.age_known === 'No'"></el-input>
                 </el-form-item>
                 <el-form-item label="Gender" prop="gender">
@@ -46,8 +48,8 @@
         </template>
         <template #footer>
             <div>
-                <el-button type="default" plain>Cancel</el-button>
-                <el-button type="primary" plain>Save</el-button>
+                <el-button type="default" plain @click="this.visible = false">Cancel</el-button>
+                <el-button type="primary" plain @click="savePet">Save</el-button>
             </div>
         </template>
     </el-drawer>
@@ -58,14 +60,6 @@ export default {
     name: 'CreatePet',
 
     props: {
-        breeds: {
-            required: true,
-        },
-
-        petTypes: {
-            required: true,
-        },
-
         showDrawer: {
             required: true,
             type: Boolean,
@@ -74,13 +68,21 @@ export default {
 
     computed: {
         fbreeds() {
-            _.filter(this.breeds, (b) => {
+            return _.filter(this.breeds, (b) => {
                 return b.pet_type_id === this.pet.pet_type_id;
             });
         },
 
         mixText() {
             return "It's a mix"
+        },
+
+        otherBreed() {
+            let breed = _.find(this.fbreeds, (b) => {
+                return b.name === "Can't find it?";
+            });
+
+            return breed?.id;
         },
     },
 
@@ -110,12 +112,54 @@ export default {
                 breed_known: '',
                 age_known: '',
             },
+            petTypes: [],
+            breeds: [],
         };
     },
 
     methods: {
         savePet() {
+            this.loading = true;
+            axios.post('/api/pets', this.pet).then(response => {
+                this.$notify.success({
+                    title: 'Success',
+                    message: 'Pet Data Saved!',
+                })
+            }).catch(err => {
+                this.$notify.error({
+                    title: 'Error',
+                    message: 'Something went wrong!',
+                })
+            }).finally(() => {
+                this.loading = false;
+            });
+        },
 
+        fetchPetTypes() {
+            axios.get('/api/pet-types').then(response => {
+                this.petTypes = response.data.data;
+            }).catch(err => {
+                this.$notify.error({
+                    title: 'Error',
+                    message: 'Something went wrong!',
+                })
+            });
+        },
+
+        fetchBreeds() {
+            axios.get('/api/breeds').then(response => {
+                this.breeds = response.data.data;
+            }).catch(err => {
+                this.$notify.error({
+                    title: 'Error',
+                    message: 'Something went wrong!',
+                })
+            });
+        },
+
+        openEvents() {
+            this.fetchPetTypes();
+            this.fetchBreeds();
         },
     },
 }

@@ -20,6 +20,7 @@ class PetResource extends JsonResource
             'pet_type_id' => $this->pet_type_id,
             'breed_id' => $this->breed_id,
             'breed_name' => $this->breed_name,
+            'gender' => $this->gender,
             'age' => $this->age,
             'dob' => $this->dob,
             'created_at' => $this->created_at,

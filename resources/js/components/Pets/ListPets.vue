@@ -7,20 +7,37 @@
             v-loading = "loading"
             stripe
         >
-            <el-table-column prop="name" label="Name"></el-table-column>
+            <el-table-column label="Name">
+                <template #default="scope">
+                    {{ scope.row.name }}
+                </template>
+            </el-table-column>
             <el-table-column label="Pet Type">
                 <template #default="scope">
-                    {{ scope.petType.name }}
+                    {{ scope.row.petType.name }}
                 </template>
             </el-table-column>
             <el-table-column label="Breed">
                 <template #default="scope">
-                    <span v-if = "scope.breed_name">{{ scope.breed_name }}</span>
-                    <span v-else>{{ scope.breed.name }}</span>
+                    <span v-if = "scope.row.breed_name">{{ scope.row.breed_name }}</span>
+                    <span v-else>{{ scope.row.breed.name }}</span>
                 </template>
             </el-table-column>
-            <el-table-column prop="gender" label="Gender"></el-table-column>
-            <el-table-column prop="breed.is_dangerous" label="Is Dangerous"></el-table-column>
+            <el-table-column label="Gender">
+                <template #default="scope">
+                    {{ scope.row.gender }}
+                </template>
+            </el-table-column>
+            <el-table-column label="Is Dangerous">
+                <template #default="scope">
+                    <span v-if="scope.row.breed.is_dangerous">
+                        Yes
+                    </span>
+                    <span v-else>
+                        No
+                    </span>
+                </template>
+            </el-table-column>
         </el-table>
 
         <create-pet :show-drawer="showDrawer" :pet-types="petTypes" :breeds="breeds"></create-pet>
@@ -33,8 +50,6 @@ export default {
 
     mounted() {
         this.fetchPets();
-        this.fetchPetTypes();
-        this.fetchBreeds();
     },
 
     data() {
@@ -48,32 +63,12 @@ export default {
     },
 
     methods: {
-        fetchBreeds() {
-            axios.get('/api/pet-types').then(response => {
-                this.petTypes = response.data.data;
-            }).catch(err => {
-                this.$notify.error({
-                    title: 'Error',
-                    message: 'Something went wrong!',
-                })
-            });
-        },
-
-        fetchPetTypes() {
-            axios.get('/api/breeds').then(response => {
-                this.breeds = response.data.data;
-            }).catch(err => {
-                this.$notify.error({
-                    title: 'Error',
-                    message: 'Something went wrong!',
-                })
-            });
-        },
 
         fetchPets() {
             this.loading = true;
             axios.get('/api/pets?with[]=breed&with[]=petType').then(response => {
                 this.pets = response.data.data;
+                console.log(this.pets);
             }).catch(err => {
                 this.$notify.error({
                     title: 'Error',
