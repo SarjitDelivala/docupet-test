@@ -8,6 +8,6 @@ class PetController extends Controller
 {
     public function index(Request $request)
     {
-
+        return view('pets.index');
     }
 }

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('pet_type_id');
             $table->string('name');
+            $table->boolean('is_dangerous')->default(0);
             $table->timestamps();
             $table->softDeletes();
 

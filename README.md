@@ -19,3 +19,11 @@ This Project is created using following technologies
 
 Follow these steps to run this project on your local...
 
+- Clone the repo from GitHub
+- Open terminal and navigate into the directory
+- Run command `cp .env.example .env`
+- Run command `docker-compose up -d` to run the containers
+- Run command `php artisan migrate` to migrate tables into the DB
+- Run command `php artisan db:seed` to generate necessary data
+- 
+
