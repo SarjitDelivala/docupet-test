@@ -15,10 +15,11 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('pet_type_id');
             $table->foreignUuid('breed_id')->nullable();
-            $table->string('breed')->nullable();
+            $table->string('breed_name')->nullable();
             $table->string('name');
             $table->integer('age')->nullable();
             $table->date('dob')->nullable();
+            $table->string('gender');
             $table->timestamps();
             $table->softDeletes();
         });

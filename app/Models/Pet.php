@@ -15,9 +15,10 @@ class Pet extends Model
         'name',
         'pet_type_id',
         'breed_id',
-        'breed',
+        'breed_name',
         'age',
         'dob',
+        'gender',
     ];
 
     public function petType()

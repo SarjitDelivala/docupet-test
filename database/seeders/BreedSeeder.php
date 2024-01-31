@@ -15,6 +15,7 @@ class BreedSeeder extends Seeder
         'Maine' => 0,
         'Bengal' => 0,
         'Sphynx' => 0,
+        "Can't find it?" => 0,
     ];
 
     private $dogBreeds = [
@@ -25,6 +26,7 @@ class BreedSeeder extends Seeder
         'Poodle' => 0,
         'Pitbull' => 1,
         'Mastiff' => 1,
+        "Can't find it?" => 0,
     ];
     /**
      * Run the database seeds.
