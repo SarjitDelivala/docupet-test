@@ -24,7 +24,7 @@ class CreatePetRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'name' => [
                 'required',
                 'string',
@@ -44,15 +44,31 @@ class CreatePetRequest extends FormRequest
             'age' => [
                 'nullable',
                 'integer',
+                'required_without:dob',
             ],
             'dob' => [
                 'nullable',
                 'date',
+                'required_without:age',
             ],
             'gender' => [
                 'string',
                 'required',
             ]
         ];
+
+        if (in_array($this->input('breed_id'), $this->getOtherBreeds()) && $this->input('breed_known') == "It's a mix") {
+            $rules['breed_name'] = [
+                'string',
+                'required',
+            ];
+        }
+
+        return $rules;
+    }
+
+    function getOtherBreeds()
+    {
+        return Breed::where('name', "Can't find it?")->pluck('id')->toArray();
     }
 }
