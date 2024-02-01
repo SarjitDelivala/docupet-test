@@ -5,7 +5,7 @@
         <el-table
             :data = "pets"
             v-loading = "loading"
-            stripe
+            :row-class-name = "showDangerStatus"
         >
             <el-table-column label="Name">
                 <template #default="scope">
@@ -77,7 +77,19 @@ export default {
                 this.loading = false;
             });
         },
+
+        showDangerStatus(row, rowIndex) {
+            if (row.row.breed.is_dangerous) {
+                return 'warning-row';
+            }
+            return "";
+        }
     },
 }
 </script>
 
+<style>
+.el-table .warning-row {
+    --el-table-tr-bg-color: #f2bcbc !important;
+}
+</style>
