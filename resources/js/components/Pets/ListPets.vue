@@ -68,7 +68,6 @@ export default {
             this.loading = true;
             axios.get('/api/pets?with[]=breed&with[]=petType').then(response => {
                 this.pets = response.data.data;
-                console.log(this.pets);
             }).catch(err => {
                 this.$notify.error({
                     title: 'Error',
