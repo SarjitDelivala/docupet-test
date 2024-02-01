@@ -25,6 +25,10 @@ COPY . .
 
 RUN composer install
 
-RUN npm install
+RUN npm install && npm run build
 
 RUN php artisan key:generate
+
+EXPOSE 9000
+
+CMD ["php-fpm"]
